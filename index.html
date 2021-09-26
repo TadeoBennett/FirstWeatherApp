@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Test</title>
+  <link rel="stylesheet" type="text/css" href="./style.css">
+  <link href='https://fonts.googleapis.com/css?family=Open+Sans:300' rel='stylesheet' type='text/css'>
+</head>
+
+<body>
+  <header>
+    <h1>My First Weather App</h1>
+  </header>
+  <main>
+    <fieldset>
+      <legend>Enter a City Name(ex."Belize")</legend>
+      <form method="post" onsubmit="return false">
+        <input id="input" name="city" type="text" class="ghost-input" placeholder="Enter a City" required>
+        <input id="submit" type="submit" class="ghost-button" value="Get Weather" onclick="getAnswer();">
+        <p id="fail"></p>
+        <p class="hidden edit">City Name : <span id="country"></span></p>
+        <p class="hidden edit">Weather Description: <span id="wdescrip"></span></p>
+        <p class="hidden edit">Temperature(Fahrenheit): <span id="temp"></span></p>
+        <p class="hidden edit">Wind Speed(mph): <span id="wsmph"></span></p>
+      </form>
+    </fieldset>
+  </main>
+
+  <script type="text/javascript">
+
+    async function getAnswer() {
+      let input = document.getElementById('input');
+      let output = document.getElementById('fail');
+      let api = 'https://api.openweathermap.org/data/2.5/weather?q=';
+      let apiKey = '&appid=31e74d9988a13e0a242ea0d788045ce4';
+      let units = '&units=imperial';
+      let url = `${api}${input.value}${apiKey}${units}`;
+
+      if (input.value.length < 3) {
+        output.innerHTML = "Invalid Input";
+      } else {
+        const getCurrentWeather = await fetch(url);
+        const myCurrentWeather = await getCurrentWeather.json();
+        console.log("You received: ", myCurrentWeather);
+
+        let country = document.getElementById('country');
+        let temp = document.getElementById('temp');
+        let wsmph = document.getElementById('wsmph');
+        let wd = document.getElementById('wdescrip');
+
+        let editables = document.querySelectorAll(".edit");
+        for (var i = 0; i < editables.length; i++) {
+          editables[i].classList.remove('hidden')
+        }
+        country.innerHTML = myCurrentWeather.name;
+        temp.innerHTML = myCurrentWeather.main.temp;
+        wsmph.innerHTML = myCurrentWeather.wind.speed;
+        wd.innerHTML = myCurrentWeather.weather[0].description;
+
+        // just in case it is being displayed
+        document.getElementById('fail').innerHTML = "";
+      }
+    }
+
+
+
+
+  </script>
+</body>
+
+</html>
